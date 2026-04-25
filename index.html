@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GreenHouse IQ — Interactive System Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:       #05110a;
+  --bg2:      #091610;
+  --bg3:      #0d1e13;
+  --panel:    #0b1a0f;
+  --border:   #1a3322;
+  --border2:  #2d5540;
+  --green:    #22c55e;
+  --green2:   #16a34a;
+  --green3:   #14532d;
+  --teal:     #14b8a6;
+  --amber:    #f59e0b;
+  --red:      #ef4444;
+  --blue:     #38bdf8;
+  --purple:   #a78bfa;
+  --text:     #dff2e8;
+  --text2:    #7aab8e;
+  --text3:    #3b6349;
+  --mono:     'Space Mono', monospace;
+  --sans:     'DM Sans', sans-serif;
+  --serif:    'Playfair Display', serif;
+  --r:        14px;
+  --r2:       22px;
+  --glow:     rgba(34,197,94,0.12);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--sans);
+  min-height:100vh;overflow-x:hidden;
+}
+
+/* ── scanlines ── */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,255,80,.012) 3px,rgba(0,255,80,.012) 4px);
+}
+
+/* ── NAV ── */
+nav{
+  position:sticky;top:0;z-index:200;
+  background:rgba(5,17,10,.95);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.8rem 2rem;
+}
+.nav-brand{display:flex;align-items:center;gap:.75rem}
+.nav-leaf{
+  width:36px;height:36px;border-radius:10px;
+  background:linear-gradient(135deg,var(--green2),var(--green));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;
+  box-shadow:0 0 24px var(--glow);
+}
+.nav-title{font-family:var(--serif);font-size:1.15rem;letter-spacing:-.01em}
+.nav-sub{font-family:var(--mono);font-size:.58rem;color:var(--text2)}
+.nav-links{display:flex;gap:1.5rem}
+.nav-links a{
+  font-family:var(--mono);font-size:.65rem;color:var(--text2);
+  text-decoration:none;text-transform:uppercase;letter-spacing:.08em;
+  transition:color .2s;
+}
+.nav-links a:hover{color:var(--green)}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;padding:4rem 2rem;
+  position:relative;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 30%, rgba(22,163,74,.08) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero-grid{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(34,197,94,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,197,94,.04) 1px, transparent 1px);
+  background-size:40px 40px;
+  mask-image:radial-gradient(ellipse 70% 70% at 50% 50%, black, transparent);
+}
+.hero-chip{
+  font-family:var(--mono);font-size:.65rem;
+  padding:.3rem 1rem;border-radius:99px;
+  background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);
+  color:var(--green);margin-bottom:1.5rem;
+  display:inline-flex;align-items:center;gap:.4rem;
+  animation:fadeUp .8s ease both;
+}
+.chip-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes drip{0%,100%{transform:translateY(0) scale(1);opacity:1}50%{transform:translateY(8px) scale(.8);opacity:.5}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+
+.hero h1{
+  font-family:var(--serif);font-size:clamp(2.4rem,6vw,4.5rem);
+  line-height:1.05;letter-spacing:-.02em;margin-bottom:1rem;
+  animation:fadeUp .8s .1s ease both;
+  background:linear-gradient(135deg,var(--text),var(--green),var(--teal));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero-sub{
+  font-size:1.05rem;color:var(--text2);max-width:640px;line-height:1.7;
+  animation:fadeUp .8s .2s ease both;margin-bottom:2.5rem;
+}
+.hero-stats{
+  display:flex;gap:2rem;flex-wrap:wrap;justify-content:center;
+  animation:fadeUp .8s .3s ease both;margin-bottom:3rem;
+}
+.hero-stat{text-align:center}
+.hero-stat .num{
+  font-family:var(--mono);font-size:1.8rem;font-weight:700;
+  color:var(--green);display:block;
+}
+.hero-stat .lbl{font-size:.75rem;color:var(--text2);font-family:var(--mono)}
+.hero-cta{
+  display:inline-flex;align-items:center;gap:.6rem;
+  background:var(--green2);color:#040f06;
+  font-family:var(--mono);font-size:.75rem;font-weight:700;
+  padding:.75rem 1.75rem;border-radius:10px;
+  text-decoration:none;border:none;cursor:pointer;
+  animation:fadeUp .8s .4s ease both;
+  transition:background .2s,transform .2s,box-shadow .2s;
+}
+.hero-cta:hover{background:var(--green);transform:translateY(-2px);box-shadow:0 8px 32px var(--glow)}
+
+/* ── SECTIONS ── */
+section{padding:5rem 2rem;max-width:1200px;margin:0 auto}
+.sec-label{
+  font-family:var(--mono);font-size:.65rem;color:var(--green);
+  text-transform:uppercase;letter-spacing:.15em;margin-bottom:.75rem;
+  display:flex;align-items:center;gap:.5rem;
+}
+.sec-label::before{content:'//'}
+.sec-title{
+  font-family:var(--serif);font-size:clamp(1.6rem,3vw,2.4rem);
+  line-height:1.2;margin-bottom:1rem;
+}
+.sec-desc{color:var(--text2);line-height:1.7;max-width:640px;margin-bottom:3rem}
+
+/* ── SYSTEM DIAGRAM (interactive) ── */
+.diagram-wrap{
+  position:relative;
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--r2);padding:2rem;overflow:hidden;
+}
+.diagram-wrap::before{
+  content:'LIVE SYSTEM';
+  position:absolute;top:1rem;right:1rem;
+  font-family:var(--mono);font-size:.58rem;color:var(--green);
+  letter-spacing:.15em;opacity:.5;
+}
+.diagram-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1.5rem;position:relative;
+}
+
+/* connecting lines */
+.conn-layer{
+  position:absolute;inset:0;pointer-events:none;z-index:0;
+}
+
+.comp-group{z-index:1;display:flex;flex-direction:column;gap:.75rem}
+.comp-group-title{
+  font-family:var(--mono);font-size:.6rem;color:var(--text3);
+  text-transform:uppercase;letter-spacing:.12em;text-align:center;
+  padding:.25rem;border-bottom:1px solid var(--border);margin-bottom:.25rem;
+}
+
+.comp-card{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--r);padding:.9rem 1rem;
+  cursor:pointer;
+  transition:all .25s cubic-bezier(.4,0,.2,1);
+  position:relative;overflow:hidden;
+  user-select:none;
+}
+.comp-card::before{
+  content:'';position:absolute;inset:0;
+  background:var(--card-glow,transparent);
+  opacity:0;transition:opacity .3s;
+}
+.comp-card:hover::before{opacity:1}
+.comp-card:hover{
+  border-color:var(--card-color,var(--green));
+  transform:translateY(-3px);
+  box-shadow:0 8px 32px var(--card-shadow,var(--glow));
+}
+.comp-card.active{
+  border-color:var(--card-color,var(--green)) !important;
+  box-shadow:0 0 0 3px var(--card-shadow,var(--glow)) !important;
+}
+
+.comp-icon{
+  font-size:1.3rem;margin-bottom:.5rem;
+  display:block;
+  animation:float 3s ease-in-out infinite;
+}
+.comp-name{
+  font-family:var(--mono);font-size:.7rem;font-weight:700;
+  color:var(--card-color,var(--green));
+  margin-bottom:.2rem;
+}
+.comp-brief{font-size:.7rem;color:var(--text2);line-height:1.5}
+
+/* status indicators */
+.comp-status{
+  display:flex;align-items:center;gap:.35rem;
+  margin-top:.5rem;
+  font-family:var(--mono);font-size:.58rem;
+  color:var(--text3);
+}
+.status-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--text3);transition:background .4s;
+}
+.comp-card.active .status-dot{background:var(--card-color,var(--green));box-shadow:0 0 6px var(--card-color,var(--green))}
+.comp-card.working .status-dot{background:var(--amber);animation:pulse .8s infinite}
+
+/* ── DETAIL PANEL ── */
+.detail-panel{
+  margin-top:1.5rem;
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:var(--r);padding:1.5rem;
+  display:none;
+  animation:scaleIn .3s ease;
+}
+.detail-panel.show{display:block}
+.detail-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem}
+.detail-icon{font-size:2.5rem;margin-right:1rem;flex-shrink:0}
+.detail-title{
+  font-family:var(--serif);font-size:1.4rem;
+  color:var(--card-color,var(--green));margin-bottom:.2rem;
+}
+.detail-model{
+  font-family:var(--mono);font-size:.65rem;color:var(--text2);
+  background:var(--bg);padding:.2rem .5rem;border-radius:6px;
+  border:1px solid var(--border);display:inline-block;
+}
+.detail-close{
+  background:transparent;border:1px solid var(--border);
+  color:var(--text2);font-family:var(--mono);font-size:.65rem;
+  padding:.3rem .65rem;border-radius:8px;cursor:pointer;
+  transition:all .2s;flex-shrink:0;
+}
+.detail-close:hover{border-color:var(--red);color:var(--red)}
+
+.detail-body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-top:1rem}
+.detail-col h4{
+  font-family:var(--mono);font-size:.62rem;color:var(--text3);
+  text-transform:uppercase;letter-spacing:.1em;margin-bottom:.6rem;
+  padding-bottom:.4rem;border-bottom:1px solid var(--border);
+}
+.detail-col ul{list-style:none;display:flex;flex-direction:column;gap:.4rem}
+.detail-col li{
+  font-size:.78rem;color:var(--text2);line-height:1.6;
+  padding-left:1rem;position:relative;
+}
+.detail-col li::before{
+  content:'▸';position:absolute;left:0;
+  color:var(--card-color,var(--green));font-size:.6rem;top:.15rem;
+}
+.detail-desc{
+  font-size:.82rem;color:var(--text2);line-height:1.7;
+  margin-bottom:1rem;
+  grid-column:1/-1;
+}
+.detail-specs{
+  display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem;
+}
+.spec-pill{
+  font-family:var(--mono);font-size:.6rem;
+  padding:.2rem .6rem;border-radius:99px;
+  background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);
+  color:var(--green);
+}
+
+@media(max-width:640px){
+  .detail-body{grid-template-columns:1fr}
+  .diagram-grid{grid-template-columns:1fr}
+}
+
+/* ── LIVE SIM ── */
+.sim-wrap{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--r2);overflow:hidden;
+}
+.sim-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 1.5rem;border-bottom:1px solid var(--border);
+  background:var(--bg3);
+}
+.sim-title{font-family:var(--mono);font-size:.7rem;color:var(--text2);text-transform:uppercase;letter-spacing:.1em}
+.sim-run-btn{
+  font-family:var(--mono);font-size:.65rem;font-weight:700;
+  padding:.4rem .9rem;border-radius:8px;cursor:pointer;
+  border:1px solid var(--green2);background:transparent;color:var(--green);
+  transition:all .2s;
+}
+.sim-run-btn:hover{background:var(--green2);color:#040f06}
+.sim-run-btn.running{border-color:var(--red);color:var(--red)}
+.sim-run-btn.running:hover{background:var(--red);color:#fff}
+
+.sim-body{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.sim-left{
+  padding:1.5rem;border-right:1px solid var(--border);
+}
+.sim-right{padding:1.5rem}
+
+.sensor-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.04);
+}
+.sensor-row:last-child{border-bottom:none}
+.sensor-lbl{font-family:var(--mono);font-size:.65rem;color:var(--text2)}
+.sensor-val{font-family:var(--mono);font-size:.8rem;font-weight:700;color:var(--green);min-width:60px;text-align:right}
+.sensor-val.warn{color:var(--amber);animation:pulse 1s infinite}
+.sensor-val.danger{color:var(--red);animation:pulse .6s infinite}
+.sensor-bar{height:4px;background:var(--bg);border-radius:99px;margin-top:.35rem;overflow:hidden}
+.sensor-fill{height:100%;border-radius:99px;background:var(--green);transition:width 1s cubic-bezier(.4,0,.2,1)}
+
+.zone-block{
+  padding:.65rem .9rem;border-radius:var(--r);
+  border:1px solid var(--border);background:var(--bg2);
+  margin-bottom:.6rem;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:all .4s;
+}
+.zone-block.irrigating{
+  border-color:var(--teal);background:rgba(20,184,166,.06);
+}
+.zone-block.dry{border-color:var(--amber)}
+.zone-name{font-family:var(--mono);font-size:.65rem;color:var(--text2)}
+.zone-crop{font-size:.7rem;color:var(--text3);font-family:var(--mono)}
+.zone-badge2{
+  font-family:var(--mono);font-size:.55rem;
+  padding:.15rem .5rem;border-radius:99px;
+  background:rgba(255,255,255,.06);color:var(--text3);
+  transition:all .4s;
+}
+.zone-block.irrigating .zone-badge2{
+  background:rgba(20,184,166,.2);color:var(--teal);
+}
+
+/* ── CROPS TABLE ── */
+.crops-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:1rem;margin-top:2rem;
+}
+.crop-card{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--r);padding:1.25rem;
+  cursor:pointer;transition:all .2s;
+  position:relative;overflow:hidden;
+}
+.crop-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--c-accent,var(--green));
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .3s;
+}
+.crop-card:hover::after{transform:scaleX(1)}
+.crop-card:hover{border-color:var(--c-accent,var(--green));transform:translateY(-3px)}
+.crop-emoji{font-size:2rem;margin-bottom:.75rem;display:block;animation:float 3s ease infinite}
+.crop-name{font-family:var(--serif);font-size:1.1rem;margin-bottom:.75rem}
+.crop-params{display:flex;flex-direction:column;gap:.35rem}
+.param-row{display:flex;justify-content:space-between;align-items:center}
+.param-key{font-family:var(--mono);font-size:.6rem;color:var(--text3)}
+.param-val{font-family:var(--mono);font-size:.65rem;font-weight:700;color:var(--text2)}
+.param-bar-wrap{height:3px;background:var(--bg3);border-radius:99px;overflow:hidden;flex:1;margin:0 .5rem}
+.param-bar-fill{height:100%;border-radius:99px;transition:width .8s ease}
+
+/* ── PROS/CONS ── */
+.proscons{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem}
+.pc-panel{
+  background:var(--panel);border-radius:var(--r);overflow:hidden;
+  border:1px solid var(--border);
+}
+.pc-header{
+  padding:.875rem 1.25rem;
+  display:flex;align-items:center;gap:.6rem;
+  font-family:var(--mono);font-size:.7rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.1em;
+}
+.pc-header.pros{background:rgba(34,197,94,.1);color:var(--green);border-bottom:1px solid rgba(34,197,94,.2)}
+.pc-header.cons{background:rgba(239,68,68,.08);color:var(--red);border-bottom:1px solid rgba(239,68,68,.15)}
+.pc-list{padding:1rem 1.25rem;display:flex;flex-direction:column;gap:.6rem}
+.pc-item{
+  display:flex;gap:.75rem;align-items:flex-start;
+  font-size:.82rem;color:var(--text2);line-height:1.6;
+  padding:.5rem;border-radius:8px;
+  transition:background .2s;cursor:default;
+}
+.pc-item:hover{background:rgba(255,255,255,.03)}
+.pc-dot{
+  width:18px;height:18px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.65rem;margin-top:.1rem;
+}
+.pc-dot.pro{background:rgba(34,197,94,.2);color:var(--green)}
+.pc-dot.con{background:rgba(239,68,68,.15);color:var(--red)}
+
+/* ── SCOPE ── */
+.scope-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin-top:2rem}
+.scope-card{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--r);padding:1.25rem;
+  transition:all .25s;
+}
+.scope-card:hover{border-color:var(--purple);transform:translateY(-3px);box-shadow:0 8px 32px rgba(167,139,250,.1)}
+.scope-icon{font-size:1.6rem;margin-bottom:.75rem;display:block;animation:float 3s ease infinite}
+.scope-title{font-family:var(--mono);font-size:.72rem;font-weight:700;color:var(--purple);margin-bottom:.4rem}
+.scope-desc{font-size:.78rem;color:var(--text2);line-height:1.65}
+
+/* ── USE CASES ── */
+.usecase-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-top:2rem}
+.uc-card{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--r);padding:1.2rem;
+  text-align:center;transition:all .25s;
+}
+.uc-card:hover{border-color:var(--teal);transform:translateY(-3px)}
+.uc-icon{font-size:1.8rem;margin-bottom:.6rem;display:block}
+.uc-title{font-family:var(--mono);font-size:.68rem;font-weight:700;color:var(--teal);margin-bottom:.3rem}
+.uc-desc{font-size:.75rem;color:var(--text2);line-height:1.6}
+
+/* ── BLE FLOW ── */
+.flow-wrap{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--r2);padding:2rem;margin-top:2rem;
+  display:flex;align-items:center;justify-content:center;
+  gap:.5rem;flex-wrap:wrap;
+}
+.flow-node{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--r);padding:.75rem 1rem;
+  font-family:var(--mono);font-size:.68rem;color:var(--text);
+  text-align:center;min-width:90px;
+  transition:all .3s;
+}
+.flow-node .fn{font-size:.6rem;color:var(--text2);margin-top:.2rem}
+.flow-arrow{
+  font-family:var(--mono);font-size:.8rem;
+  color:var(--green);opacity:.6;
+}
+.flow-node.active{
+  border-color:var(--green);background:rgba(34,197,94,.08);
+  color:var(--green);
+  box-shadow:0 0 20px var(--glow);
+}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--border);
+  padding:2rem;text-align:center;
+  font-family:var(--mono);font-size:.65rem;color:var(--text3);
+}
+footer a{color:var(--green);text-decoration:none}
+footer a:hover{text-decoration:underline}
+
+/* ── DIVIDER ── */
+.divider{
+  width:100%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--border),transparent);
+  margin:0;
+}
+
+/* ── SCROLL REVEAL ── */
+.reveal{
+  opacity:0;transform:translateY(24px);
+  transition:opacity .7s ease,transform .7s ease;
+}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  nav{padding:.75rem 1rem}
+  .nav-links{display:none}
+  .sim-body{grid-template-columns:1fr}
+  .sim-left{border-right:none;border-bottom:1px solid var(--border)}
+  .proscons{grid-template-columns:1fr}
+  .hero-stats{gap:1.2rem}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">
+    <div class="nav-leaf">🌿</div>
+    <div>
+      <div class="nav-title">GreenHouse IQ</div>
+      <div class="nav-sub">ESP32 · BLE · IoT Irrigation</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="#components">Components</a>
+    <a href="#simulation">Simulation</a>
+    <a href="#crops">Crops</a>
+    <a href="#analysis">Analysis</a>
+    <a href="#scope">Future</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-chip"><div class="chip-dot"></div>Interactive System Demo</div>
+  <h1>Smart Greenhouse<br/>Irrigation System</h1>
+  <p class="hero-sub">An ESP32-powered multi-zone irrigation controller with real-time sensor fusion, adaptive crop profiles, BLE connectivity, and a PWA dashboard — designed for modern smart agriculture.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><span class="num">8</span><span class="lbl">Crop Profiles</span></div>
+    <div class="hero-stat"><span class="num">4</span><span class="lbl">Sensor Types</span></div>
+    <div class="hero-stat"><span class="num">6</span><span class="lbl">Actuators</span></div>
+    <div class="hero-stat"><span class="num">BLE</span><span class="lbl">Offline Ready</span></div>
+  </div>
+  <a class="hero-cta" href="#components">Explore Components ↓</a>
+</div>
+
+<div class="divider"></div>
+
+<!-- COMPONENTS -->
+<section id="components">
+  <div class="reveal">
+    <div class="sec-label">01 · System Architecture</div>
+    <h2 class="sec-title">Tap any component to explore</h2>
+    <p class="sec-desc">The system integrates four sensor types and six actuators all controlled by an ESP32 microcontroller. Click any block to see why it was chosen, how it works, and its role in the system.</p>
+  </div>
+  <div class="reveal diagram-wrap">
+    <div class="diagram-grid">
+      <!-- SENSORS -->
+      <div class="comp-group">
+        <div class="comp-group-title">⬡ Sensor Layer</div>
+        <div class="comp-card" id="c-dht22" style="--card-color:#38bdf8;--card-glow:rgba(56,189,248,.06);--card-shadow:rgba(56,189,248,.15)" onclick="showDetail('dht22')">
+          <span class="comp-icon">🌡️</span>
+          <div class="comp-name">DHT22</div>
+          <div class="comp-brief">Air temperature &amp; relative humidity</div>
+          <div class="comp-status"><div class="status-dot"></div><span>GPIO 4 · OneWire-like</span></div>
+        </div>
+        <div class="comp-card" id="c-soil" style="--card-color:#a78bfa;--card-glow:rgba(167,139,250,.06);--card-shadow:rgba(167,139,250,.15)" onclick="showDetail('soil')">
+          <span class="comp-icon">🌱</span>
+          <div class="comp-name">Capacitive Moisture × 4</div>
+          <div class="comp-brief">Soil water content per zone, 0–100%</div>
+          <div class="comp-status"><div class="status-dot"></div><span>GPIO 34·35·32·33</span></div>
+        </div>
+        <div class="comp-card" id="c-ds18" style="--card-color:#22c55e;--card-glow:rgba(34,197,94,.06);--card-shadow:rgba(34,197,94,.15)" onclick="showDetail('ds18')">
+          <span class="comp-icon">🌿</span>
+          <div class="comp-name">DS18B20</div>
+          <div class="comp-brief">Soil temperature via OneWire bus</div>
+          <div class="comp-status"><div class="status-dot"></div><span>GPIO 5 · OneWire</span></div>
+        </div>
+      </div>
+
+      <!-- CONTROLLER -->
+      <div class="comp-group">
+        <div class="comp-group-title">⬡ Controller Layer</div>
+        <div class="comp-card" id="c-esp32" style="--card-color:#f59e0b;--card-glow:rgba(245,158,11,.06);--card-shadow:rgba(245,158,11,.2)" onclick="showDetail('esp32')">
+          <span class="comp-icon">🔲</span>
+          <div class="comp-name">ESP32 DevKit v1</div>
+          <div class="comp-brief">Dual-core MCU, BLE 4.2, 18 ADC pins</div>
+          <div class="comp-status"><div class="status-dot"></div><span>240MHz · 4MB Flash</span></div>
+        </div>
+        <div class="comp-card" id="c-ble" style="--card-color:#14b8a6;--card-glow:rgba(20,184,166,.06);--card-shadow:rgba(20,184,166,.15)" onclick="showDetail('ble')">
+          <span class="comp-icon">📡</span>
+          <div class="comp-name">BLE 4.2 (GATT)</div>
+          <div class="comp-brief">Offline wireless · no router needed</div>
+          <div class="comp-status"><div class="status-dot"></div><span>4 characteristics</span></div>
+        </div>
+        <div class="comp-card" id="c-eeprom" style="--card-color:#f59e0b;--card-glow:rgba(245,158,11,.06);--card-shadow:rgba(245,158,11,.15)" onclick="showDetail('eeprom')">
+          <span class="comp-icon">💾</span>
+          <div class="comp-name">EEPROM (NVS)</div>
+          <div class="comp-brief">Config survives power cycles</div>
+          <div class="comp-status"><div class="status-dot"></div><span>256 bytes config</span></div>
+        </div>
+      </div>
+
+      <!-- ACTUATORS -->
+      <div class="comp-group">
+        <div class="comp-group-title">⬡ Actuator Layer</div>
+        <div class="comp-card" id="c-valve" style="--card-color:#22c55e;--card-glow:rgba(34,197,94,.06);--card-shadow:rgba(34,197,94,.15)" onclick="showDetail('valve')">
+          <span class="comp-icon">🚰</span>
+          <div class="comp-name">Solenoid Valves × 4</div>
+          <div class="comp-brief">Per-zone 12V N/C irrigation valves</div>
+          <div class="comp-status"><div class="status-dot"></div><span>GPIO 16·17·18·19</span></div>
+        </div>
+        <div class="comp-card" id="c-pump" style="--card-color:#38bdf8;--card-glow:rgba(56,189,248,.06);--card-shadow:rgba(56,189,248,.15)" onclick="showDetail('pump')">
+          <span class="comp-icon">⚙️</span>
+          <div class="comp-name">Water Pump</div>
+          <div class="comp-brief">Main 12V submersible supply pump</div>
+          <div class="comp-status"><div class="status-dot"></div><span>GPIO 22 · relay</span></div>
+        </div>
+        <div class="comp-card" id="c-sprinkler" style="--card-color:#a78bfa;--card-glow:rgba(167,139,250,.06);--card-shadow:rgba(167,139,250,.15)" onclick="showDetail('sprinkler')">
+          <span class="comp-icon">💦</span>
+          <div class="comp-name">Mist Sprinkler</div>
+          <div class="comp-brief">Temp &amp; humidity regulation</div>
+          <div class="comp-status"><div class="status-dot"></div><span>GPIO 21 · relay</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DETAIL PANEL -->
+    <div class="detail-panel" id="detail-panel">
+      <div class="detail-header">
+        <div style="display:flex;align-items:flex-start">
+          <div class="detail-icon" id="d-icon"></div>
+          <div>
+            <div class="detail-title" id="d-title"></div>
+            <div class="detail-model" id="d-model"></div>
+          </div>
+        </div>
+        <button class="detail-close" onclick="closeDetail()">✕ Close</button>
+      </div>
+      <div class="detail-body">
+        <div class="detail-desc" id="d-desc"></div>
+        <div class="detail-col">
+          <h4>Why This Component</h4>
+          <ul id="d-why"></ul>
+        </div>
+        <div class="detail-col">
+          <h4>How It Works</h4>
+          <ul id="d-how"></ul>
+        </div>
+        <div class="detail-col">
+          <h4>Role in System</h4>
+          <ul id="d-role"></ul>
+        </div>
+      </div>
+      <div class="detail-specs" id="d-specs"></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SIMULATION -->
+<section id="simulation">
+  <div class="reveal">
+    <div class="sec-label">02 · Live Simulation</div>
+    <h2 class="sec-title">See the decision engine in action</h2>
+    <p class="sec-desc">Press Run to simulate changing environmental conditions. Watch the system automatically open valves, trigger the pump, and activate the sprinkler based on crop thresholds.</p>
+  </div>
+  <div class="reveal sim-wrap">
+    <div class="sim-header">
+      <span class="sim-title">// Sensor & Actuator Simulation</span>
+      <button class="sim-run-btn" id="sim-btn" onclick="toggleSim()">▶ Run Simulation</button>
+    </div>
+    <div class="sim-body">
+      <div class="sim-left">
+        <div style="font-family:var(--mono);font-size:.6rem;color:var(--text3);margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.1em">Live Sensor Readings</div>
+        <div class="sensor-row">
+          <div>
+            <div class="sensor-lbl">Air Temperature</div>
+            <div class="sensor-bar"><div class="sensor-fill" id="sb-temp" style="width:0%;background:var(--amber)"></div></div>
+          </div>
+          <div class="sensor-val" id="sv-temp">--°C</div>
+        </div>
+        <div class="sensor-row">
+          <div>
+            <div class="sensor-lbl">Humidity</div>
+            <div class="sensor-bar"><div class="sensor-fill" id="sb-hum" style="width:0%;background:var(--blue)"></div></div>
+          </div>
+          <div class="sensor-val" id="sv-hum">--%</div>
+        </div>
+        <div class="sensor-row">
+          <div>
+            <div class="sensor-lbl">Soil Temp</div>
+            <div class="sensor-bar"><div class="sensor-fill" id="sb-st" style="width:0%;background:var(--green)"></div></div>
+          </div>
+          <div class="sensor-val" id="sv-st">--°C</div>
+        </div>
+        <div style="height:.5rem"></div>
+        <div style="font-family:var(--mono);font-size:.6rem;color:var(--text3);margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.1em">Zone Moisture</div>
+        <div id="zone-moistures"></div>
+        <div style="margin-top:1rem;padding:.75rem;background:var(--bg);border-radius:10px;border:1px solid var(--border)">
+          <div style="font-family:var(--mono);font-size:.6rem;color:var(--text3);margin-bottom:.4rem">SYSTEM LOG</div>
+          <div id="sim-log" style="font-family:var(--mono);font-size:.62rem;color:var(--text2);height:80px;overflow-y:auto;display:flex;flex-direction:column;gap:.2rem"></div>
+        </div>
+      </div>
+      <div class="sim-right">
+        <div style="font-family:var(--mono);font-size:.6rem;color:var(--text3);margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.1em">Zone Status</div>
+        <div id="sim-zones"></div>
+        <div style="margin-top:1rem;display:flex;gap:.75rem">
+          <div style="flex:1;padding:.875rem;background:var(--bg);border-radius:10px;border:1px solid var(--border);text-align:center">
+            <div id="sprinkler-sim-icon" style="font-size:1.5rem;margin-bottom:.3rem">💦</div>
+            <div style="font-family:var(--mono);font-size:.6rem;color:var(--text3)">SPRINKLER</div>
+            <div id="sprinkler-sim-state" style="font-family:var(--mono);font-size:.7rem;color:var(--text3);margin-top:.2rem">STANDBY</div>
+          </div>
+          <div style="flex:1;padding:.875rem;background:var(--bg);border-radius:10px;border:1px solid var(--border);text-align:center">
+            <div id="pump-sim-icon" style="font-size:1.5rem;margin-bottom:.3rem">⚙️</div>
+            <div style="font-family:var(--mono);font-size:.6rem;color:var(--text3)">PUMP</div>
+            <div id="pump-sim-state" style="font-family:var(--mono);font-size:.7rem;color:var(--text3);margin-top:.2rem">OFF</div>
+          </div>
+          <div style="flex:1;padding:.875rem;background:var(--bg);border-radius:10px;border:1px solid var(--border);text-align:center">
+            <div id="ble-sim-icon" style="font-size:1.5rem;margin-bottom:.3rem">📡</div>
+            <div style="font-family:var(--mono);font-size:.6rem;color:var(--text3)">BLE TX</div>
+            <div id="ble-sim-state" style="font-family:var(--mono);font-size:.7rem;color:var(--text3);margin-top:.2rem">IDLE</div>
+          </div>
+        </div>
+        <!-- BLE data flow viz -->
+        <div style="margin-top:1rem;padding:.875rem;background:var(--bg);border-radius:10px;border:1px solid var(--border)">
+          <div style="font-family:var(--mono);font-size:.6rem;color:var(--text3);margin-bottom:.6rem">BLE DATA FLOW</div>
+          <div class="flow-wrap" style="padding:.75rem;gap:.3rem;background:transparent">
+            <div class="flow-node" id="fn-esp"><span>ESP32</span><div class="fn">controller</div></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node" id="fn-ble">BLE<div class="fn">GATT server</div></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node" id="fn-web">PWA<div class="fn">dashboard</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CROPS -->
+<section id="crops">
+  <div class="reveal">
+    <div class="sec-label">03 · Crop Profiles</div>
+    <h2 class="sec-title">Switchable environments per zone</h2>
+    <p class="sec-desc">Each zone can be independently assigned one of 8 crop profiles. The system reads moisture, temperature, and humidity, then decides irrigation duration and sprinkler activation per profile. Tap a crop to explore its ideal environment.</p>
+  </div>
+  <div class="crops-grid reveal" id="crops-grid"></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ADVANTAGES & DISADVANTAGES -->
+<section id="analysis">
+  <div class="reveal">
+    <div class="sec-label">04 · System Analysis</div>
+    <h2 class="sec-title">Advantages &amp; Disadvantages</h2>
+    <p class="sec-desc">An honest technical breakdown of what this system does well and where it has current limitations.</p>
+  </div>
+  <div class="proscons reveal">
+    <div class="pc-panel">
+      <div class="pc-header pros">✓ Advantages</div>
+      <div class="pc-list" id="pros-list"></div>
+    </div>
+    <div class="pc-panel">
+      <div class="pc-header cons">✗ Disadvantages</div>
+      <div class="pc-list" id="cons-list"></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- USE CASES -->
+<section id="usecases">
+  <div class="reveal">
+    <div class="sec-label">05 · Applications</div>
+    <h2 class="sec-title">Where it can be deployed</h2>
+    <p class="sec-desc">This system is designed for versatile deployment across agricultural, educational, and commercial contexts.</p>
+  </div>
+  <div class="usecase-grid reveal" id="usecases-grid"></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FUTURE SCOPE -->
+<section id="scope">
+  <div class="reveal">
+    <div class="sec-label">06 · Future Scope</div>
+    <h2 class="sec-title">Where this technology is headed</h2>
+    <p class="sec-desc">The current system is a foundation for a much larger vision. Here are the most impactful extensions planned for future versions.</p>
+  </div>
+  <div class="scope-grid reveal" id="scope-grid"></div>
+</section>
+
+<footer>
+  <p>GreenHouse IQ — Smart Irrigation System · Built with ESP32 + BLE + PWA</p>
+  <p style="margin-top:.4rem">MIT License · <a href="https://github.com">View on GitHub</a> · West Bengal, India 🇮🇳</p>
+</footer>
+
+<script>
+// ─── COMPONENT DATA ─────────────────────────────────────────────────────────
+const COMPONENTS = {
+  dht22: {
+    icon:'🌡️', color:'#38bdf8',
+    title:'DHT22 — Temperature & Humidity Sensor',
+    model:'MODEL: AM2302 / DHT22 · 3.3–5V',
+    desc:'The DHT22 is a calibrated digital sensor that captures both air temperature (−40°C to +80°C, ±0.5°C accuracy) and relative humidity (0–100% RH, ±2–5% accuracy) on a single data pin using a proprietary 1-Wire-like protocol. It is one of the most common sensors used in greenhouse climate control due to its reliability and easy integration with microcontrollers.',
+    why:['High accuracy (±0.5°C) vs cheaper DHT11 (±2°C)','Single-wire digital protocol — no ADC needed','Calibrated factory output — no offset correction','Wide temp range covers all crop profiles','Available globally and low cost (₹150–250)'],
+    how:['Capacitive humidity sensing element','NTC thermistor for temperature','40-bit digital output: humidity (16b) + temp (16b) + checksum (8b)','2-second minimum sampling interval enforced in firmware','4.7kΩ pull-up resistor required on DATA pin'],
+    role:['Triggers sprinkler when airTemp > crop.tempMax','Triggers sprinkler if humidity < 40% (stress response)','Sends real-time data over BLE to PWA dashboard','Alerts operator via dashboard if conditions are unsafe','Soil vs air temp differential used for anomaly detection'],
+    specs:['±0.5°C accuracy','±2–5% RH accuracy','0.5 Hz sampling','3.3–5.5V supply','GPIO 4 · pull-up 4.7kΩ']
+  },
+  soil: {
+    icon:'🌱', color:'#a78bfa',
+    title:'Capacitive Soil Moisture Sensor × 4',
+    model:'MODEL: v1.2 Capacitive · 3.3V compatible',
+    desc:'Capacitive soil moisture sensors measure the dielectric permittivity of soil, which changes with water content. Unlike resistive sensors that corrode over time due to electrolysis, capacitive sensors have no exposed metal contacts. The ESP32 reads their 0–3.3V analog output via its 12-bit ADC pins, mapped to 0–100% moisture percentage using calibration values.',
+    why:['No corrosion — metal-free sensing surface','Long lifespan vs resistive (FC-28) sensors','3.3V output — direct ESP32 ADC compatibility','No electrolysis — safe for continuous soil contact','Accurate in saline soils unlike resistive type'],
+    how:['555-timer oscillator with soil as dielectric capacitor','Higher water content → higher capacitance → lower frequency','Frequency converted to analog voltage by comparator','12-bit ADC on ESP32 (0–4095 raw) → mapped to 0–100%','Calibration: ~3400 = completely dry, ~1200 = saturated'],
+    role:['Primary trigger for irrigation decisions per zone','Moisture < crop.moistMin → open valve + start pump','Moisture > crop.moistMax → close valve to prevent overwatering','Independent per-zone readings enable mixed-crop greenhouses','Values streamed to PWA dashboard every 2 seconds via BLE'],
+    specs:['12-bit ADC resolution','0–100% moisture range','3.3V DC supply','GPIO 34/35/32/33','~15mA current draw']
+  },
+  ds18: {
+    icon:'🌿', color:'#22c55e',
+    title:'DS18B20 — Soil Temperature Sensor',
+    model:'MODEL: Maxim DS18B20 · TO-92 / Waterproof',
+    desc:'The DS18B20 is a digital thermometer that communicates over a 1-Wire bus, meaning multiple sensors can share a single GPIO pin. It is waterproofed (stainless steel probe version) for direct burial in soil. Soil temperature is critical for root development — seeds won\'t germinate below certain thresholds regardless of moisture, and heat stress at the root level can kill crops even when air temperature seems acceptable.',
+    why:['Waterproof stainless probe for direct soil burial','Multiple sensors on one wire (daisy-chain)','9–12 bit selectable resolution','64-bit unique ROM ID — no address conflicts','Accurate from −55°C to +125°C (±0.5°C)'],
+    how:['OneWire protocol — 1 data pin, parasitic or external power','Internal ADC samples thermistor, sends digital serial data','Each device has factory-burned 64-bit unique address','ESP32 sends ROM command, sensor responds with temp data','Reading takes 750ms at 12-bit resolution'],
+    role:['Guards against root-zone overheating','Future: germination mode detection (soil > threshold)','Complements air temp for holistic climate picture','Exposed via BLE sensor characteristic to PWA','Can detect irrigation effect — soil cools after watering'],
+    specs:['±0.5°C from −10°C to +85°C','9–12 bit resolution','750ms conversion time','GPIO 5 · OneWire bus','IP67 waterproof probe']
+  },
+  esp32: {
+    icon:'🔲', color:'#f59e0b',
+    title:'ESP32 DevKit v1 — Main Controller',
+    model:'MODEL: ESP32-WROOM-32 · Xtensa LX6 Dual-Core',
+    desc:'The ESP32 is the brain of the entire system. A dual-core 240MHz Xtensa LX6 processor with integrated BLE 4.2, Wi-Fi 802.11 b/g/n, 18 ADC channels, multiple UART/SPI/I2C interfaces, and 4MB Flash. It runs all sensor reading, irrigation decision logic, BLE GATT server, EEPROM config management, and actuator control — all in a single cheap (₹300–500) chip.',
+    why:['Integrated BLE 4.2 — no separate BLE module needed','18 ADC channels for multiple soil sensors','Dual-core: sensor reading + BLE comms run independently','Arduino ecosystem — vast library support','4MB Flash allows ArduinoJson + BLE stack comfortably'],
+    how:['Core 0 handles BLE stack (background task)','Core 1 handles sensor reads, logic, actuator control','ADC1 channels (GPIO 32–39) used for soil sensors — safe while WiFi/BLE active','EEPROM API wraps NVS flash for config persistence','Timer interrupts ensure precise irrigation duration cutoffs'],
+    role:['Reads all 7 sensors every 2 seconds','Evaluates crop thresholds and decides irrigation','Operates solenoid valves, pump, and sprinkler via relays','Serves BLE GATT server with 4 characteristics','Persists zone configuration across power cycles'],
+    specs:['240MHz dual-core','520KB SRAM · 4MB Flash','BLE 4.2 + WiFi','18 ADC channels (12-bit)','3.3V logic · 5V USB power']
+  },
+  ble: {
+    icon:'📡', color:'#14b8a6',
+    title:'BLE 4.2 GATT Server — Wireless Protocol',
+    model:'PROTOCOL: Bluetooth Low Energy 4.2 · GATT',
+    desc:'Bluetooth Low Energy (BLE) was chosen over Wi-Fi for offline-first operation — the dashboard connects directly to the ESP32 via your phone or laptop\'s Bluetooth, with no router or internet required. The ESP32 acts as a GATT (Generic Attribute Profile) server with a custom service containing 4 characteristics for sensor data, commands, configuration, and event notifications.',
+    why:['No router needed — direct device-to-device','Low power vs Wi-Fi (perfect for battery backup)','Web Bluetooth API — browser connects natively','10–30m indoor range — sufficient for any greenhouse','GATT protocol standard — easy to debug with BLE scanners'],
+    how:['ESP32 advertises as "GreenHouse-ESP32"','Browser uses navigator.bluetooth.requestDevice()','Client subscribes to Notify characteristics','Sensor data pushed every 2 seconds automatically','Commands sent as JSON write to COMMAND characteristic'],
+    role:['Streams sensor JSON to PWA dashboard in real-time','Receives valve/pump/sprinkler commands from dashboard','Syncs zone configuration both directions','Event notifications (irrigation start/stop, sprinkler on)','Enables PWA to work fully offline — BLE is the network'],
+    specs:['BLE 4.2 GATT server','4 characteristics (R/W/Notify)','~10–30m indoor range','JSON over BLE (UTF-8)','Auto-reconnect on drop']
+  },
+  eeprom: {
+    icon:'💾', color:'#f59e0b',
+    title:'EEPROM / NVS — Config Persistence',
+    model:'ESP32 NVS Flash · 256 bytes config space',
+    desc:'The ESP32\'s EEPROM library wraps the Non-Volatile Storage (NVS) flash subsystem to save the system configuration. This means zone crop assignments, auto/manual modes, and enable/disable states survive power cuts and resets. Without this, every power cycle would reset all 4 zones to default Tomato profile — unacceptable for production use.',
+    why:['Config survives power cuts and reboots','NVS is wear-leveled — 100,000+ write cycles','EEPROM API is familiar and simple to use','Stores full 4-zone config in ~50 bytes','Magic byte validation detects corrupted/uninitialized config'],
+    how:['Magic byte 0xAB at address 0 signals valid config','EEPROM.get() / EEPROM.put() serialize the struct','EEPROM.commit() flushes to NVS flash','On startup: check magic → load config or write defaults','Only written on config change — minimizes flash wear'],
+    role:['Remembers which crop is assigned to each zone','Remembers whether each zone is enabled or in auto/manual','Ensures system starts correctly after power failure','Config also synced to PWA and restored on BLE connect','Future: timestamp of last irrigation could be stored here'],
+    specs:['256 bytes allocated','~50 bytes actual config','100k+ write endurance','NVS wear leveling','Instant read on boot']
+  },
+  valve: {
+    icon:'🚰', color:'#22c55e',
+    title:'12V Solenoid Valves × 4 — Zone Irrigation',
+    model:'TYPE: N/C Solenoid · 12V DC · ½ inch BSP',
+    desc:'Normally-Closed (N/C) solenoid valves are the preferred choice for safety — they default to CLOSED when power is lost, preventing flooding in case of ESP32 failure or power outage. Each valve controls water flow to one growing zone. The ESP32 cannot drive them directly (they need 12V @ 300mA), so an opto-isolated 5V relay module is used as the interface.',
+    why:['N/C type is fail-safe — no flooding on power loss','Independent per-zone control for mixed-crop use','12V DC valves are inexpensive and widely available','Low current (300mA) — standard relay module sufficient','Fast switching time (<50ms) allows precise cycle control'],
+    how:['Relay GPIO driven HIGH → relay coil energized → contact closes','Contact connects 12V supply to valve coil','Magnetic field opens valve plunger → water flows','When GPIO goes LOW → relay opens → valve spring closes','Flyback diode on valve coil prevents voltage spikes'],
+    role:['One valve per irrigation zone (4 total)','Opened only when that zone\'s moisture < crop.moistMin','Closed when moisture ≥ crop.moistMax or duration exceeded','Always closed when pump is off (belt-and-suspenders safety)','State mirrored to PWA dashboard in real-time'],
+    specs:['12V DC operation','N/C (normally closed)','300–500mA coil current','½" or ¾" BSP fittings','GPIO 16/17/18/19 + relay']
+  },
+  pump: {
+    icon:'⚙️', color:'#38bdf8',
+    title:'Water Pump — Main Supply',
+    model:'TYPE: 12V DC Submersible · 3–5L/min',
+    desc:'The water pump is the shared hydraulic source for all 4 irrigation zones. It is only activated when at least one solenoid valve is open — this prevents pressurizing a closed system. The pump relay is controlled by the firmware with logic that checks all zones before powering down: if any zone is still irrigating, the pump stays on.',
+    why:['Centralized pump simplifies plumbing','Only runs when a valve is open — energy efficient','12V DC easy to power from same greenhouse supply','Software-controlled via relay — safe and instant response','Submersible type can live directly in water reservoir'],
+    how:['GPIO 22 → relay → pump motor power','Firmware checks all 4 zone irrigation flags before stopping','Anti-deadlock: pump auto-stops if no valve is open','Pump starts before valve opens (50ms settling time)','Current draw monitored; future versions add current sensor'],
+    role:['Supplies pressurized water to all zones','Starts when any irrigation cycle begins','Stops when last active zone finishes','Pump state shown on PWA dashboard','Guards against dry-running via firmware timeout logic'],
+    specs:['12V DC submersible','3–5 liters/minute','1–3A current draw','GPIO 22 + relay module','IP68 waterproof']
+  },
+  sprinkler: {
+    icon:'💦', color:'#a78bfa',
+    title:'Mist Sprinkler — Climate Control',
+    model:'TYPE: 12V Mist Nozzle · Fine Fog Spray',
+    desc:'The mist sprinkler system serves a completely different purpose from the irrigation valves: it controls greenhouse microclimate. When air temperature exceeds any active zone\'s crop.tempMax, or when humidity drops below 40%, the sprinkler activates to cool the air and raise humidity through evaporative cooling. This is critical for heat-sensitive crops like Lettuce and Spinach during summer.',
+    why:['Evaporative cooling — effective up to 6°C reduction','Doubles as humidity raiser for tropical crops','Prevents heat stress that irrigation alone cannot solve','Mist nozzles consume far less water than drip irrigation','GPIO-controlled relay — same interface as valves'],
+    how:['Air temp or humidity reading exceeds threshold','needSprinkler flag set in runIrrigationLogic()','GPIO 21 drives relay → mist nozzle valve opens','Fine mist (50–100µm droplets) evaporates in air','Deactivated when all zone temp conditions normalize'],
+    role:['Cools greenhouse when temp exceeds crop thresholds','Raises humidity when it drops below 40% RH','Runs independently of irrigation — can operate simultaneously','State visible on PWA dashboard with animated indicator','Future: vapor pressure deficit (VPD) target mode'],
+    specs:['12V DC nozzle valve','50–100µm mist droplets','GPIO 21 + relay','Auto: triggers on temp/hum threshold','Manual: toggle from PWA dashboard']
+  }
+};
+
+// ─── CROP DATA ───────────────────────────────────────────────────────────────
+const CROPS = [
+  {emoji:'🍅',name:'Tomato',     color:'#ef4444',moistMin:40,moistMax:70,tempMin:18,tempMax:30,humMin:60,humMax:80,soilTempMin:15,soilTempMax:27,duration:60,interval:30,tips:'Consistent moisture prevents blossom end rot. Avoid waterlogging.'},
+  {emoji:'🥬',name:'Lettuce',    color:'#22c55e',moistMin:50,moistMax:80,tempMin:10,tempMax:24,humMin:50,humMax:70,soilTempMin:10,soilTempMax:20,duration:45,interval:20,tips:'Prefers cool & moist. Wilts rapidly above 26°C. Short irrigation cycles.'},
+  {emoji:'🌶️',name:'Pepper',    color:'#f97316',moistMin:35,moistMax:65,tempMin:20,tempMax:32,humMin:50,humMax:70,soilTempMin:18,soilTempMax:30,duration:90,interval:40,tips:'Drought-tolerant. Overwatering causes root rot. Warm soil critical for fruit set.'},
+  {emoji:'🥒',name:'Cucumber',  color:'#84cc16',moistMin:45,moistMax:75,tempMin:18,tempMax:28,humMin:70,humMax:90,soilTempMin:18,soilTempMax:25,duration:75,interval:25,tips:'High humidity preferred. Sensitive to cold soil. Requires consistent moisture.'},
+  {emoji:'🌿',name:'Basil',     color:'#14b8a6',moistMin:40,moistMax:70,tempMin:16,tempMax:26,humMin:40,humMax:60,soilTempMin:18,soilTempMax:25,duration:50,interval:30,tips:'Wilts dramatically when dry. Warm soil needed. Avoid overhead watering.'},
+  {emoji:'🍃',name:'Spinach',   color:'#10b981',moistMin:55,moistMax:85,tempMin:8, tempMax:22,humMin:50,humMax:70,soilTempMin:5, soilTempMax:18,duration:40,interval:20,tips:'Bolts in heat — keep cool. Needs consistent moisture. Cold-tolerant.'},
+  {emoji:'🍓',name:'Strawberry',color:'#f43f5e',moistMin:45,moistMax:70,tempMin:15,tempMax:25,humMin:65,humMax:80,soilTempMin:14,soilTempMax:22,duration:55,interval:35,tips:'Sensitive to crown rot — avoid over-irrigation. Benefits from moderate humidity.'},
+  {emoji:'⚙️',name:'Custom',    color:'#a78bfa',moistMin:40,moistMax:70,tempMin:15,tempMax:30,humMin:50,humMax:70,soilTempMin:15,soilTempMax:28,duration:60,interval:30,tips:'All parameters user-configurable via PWA dashboard or BLE config characteristic.'},
+];
+
+// ─── PROS / CONS ─────────────────────────────────────────────────────────────
+const PROS = [
+  'Fully offline operation via BLE — no internet or router dependency makes it fail-safe',
+  'Per-zone crop profiles allow true mixed-crop greenhouses on a single controller',
+  'Normally-Closed valves are fail-safe — water stops automatically on power loss',
+  'EEPROM persistence means crop assignments survive power cycles',
+  'Capacitive soil sensors have no corrosion — multi-year lifespan vs resistive sensors',
+  'PWA dashboard installs on any Android/iOS device, works without an app store',
+  'Auto-reconnect BLE ensures monitoring resumes without user intervention after disconnects',
+  'Modular relay architecture allows easy expansion of zones beyond 4',
+  'DS18B20 waterproof probe enables root-zone temperature monitoring — unusual in low-cost systems',
+  'Sub-₹10,000 total BOM — accessible for small-scale farmers and hobbyists',
+  'Open-source MIT license — freely modifiable and extendable',
+  'Sprinkler system doubles as humidity raiser — solves two problems with one actuator',
+];
+
+const CONS = [
+  'BLE range limited to ~10–30m indoors — large greenhouses need multiple nodes',
+  'Web Bluetooth API only works in Chrome/Edge — Safari and Firefox not supported',
+  'No cloud sync — historical data is lost when the browser tab is closed',
+  'Single ESP32 is a single point of failure — no redundancy',
+  'ESP32 ADC is noisy at 12-bit — soil moisture readings can vary ±5% without averaging',
+  'No flow meter — cannot detect valve or pump failure from firmware alone',
+  'pH and EC (electrical conductivity) not measured — nutrient status unknown',
+  'Manual configuration only through PWA — no automatic crop detection',
+  'BLE MTU limits JSON payload size — large data structures need fragmentation',
+  'No real-time clock (RTC) — timestamps reset on each power cycle (use millis())',
+  'Power supply sizing must account for simultaneous valve activation — user must calculate',
+  'No rain sensor integration — outdoor partial-coverage greenhouses may over-irrigate',
+];
+
+// ─── USE CASES ───────────────────────────────────────────────────────────────
+const USECASES = [
+  {icon:'🏡',title:'Home Greenhouse',desc:'Backyard or balcony grow tents. Single ESP32 covers 4 zones easily. Phone BLE control.'},
+  {icon:'🌾',title:'Small Farm',desc:'Polyhouse farms under 1000m². Multiple nodes networked. Mixed crop rows manageable.'},
+  {icon:'🎓',title:'Agriculture College',desc:'Practical IoT + precision farming demonstration. Students interact via BLE and code the logic.'},
+  {icon:'🏢',title:'Commercial Nursery',desc:'Seedling propagation at scale. Consistent moisture critical for germination success.'},
+  {icon:'🌿',title:'Herb Farms',desc:'High-value herbs (basil, mint, coriander) need precise moisture. Revenue justifies automation.'},
+  {icon:'🍓',title:'Berry Cultivation',desc:'Strawberries, blueberries — high sensitivity to over/under watering, ideal for this system.'},
+  {icon:'🏥',title:'Medicinal Plants',desc:'Cannabis, Aloe Vera, Ashwagandha — strict environment requirements match multi-profile system.'},
+  {icon:'🧪',title:'Research Labs',desc:'Controlled variable testing. Replicable conditions across zones, data logged via BLE to laptop.'},
+  {icon:'🏫',title:'School Projects',desc:'STEM education platform. ESP32 + BLE + WebApp teaches embedded, IoT, and web all in one.'},
+  {icon:'🏨',title:'Hotel Green Walls',desc:'Decorative vertical gardens in lobbies. Automated care with minimal staff involvement.'},
+];
+
+// ─── FUTURE SCOPE ────────────────────────────────────────────────────────────
+const SCOPE = [
+  {icon:'☁️',title:'Cloud Sync + Historical Charts',desc:'MQTT over Wi-Fi to AWS/Azure IoT Hub. Long-term moisture and temp trend charts. Alerts via WhatsApp/Telegram.'},
+  {icon:'🤖',title:'ML Crop Health Prediction',desc:'TensorFlow Lite on ESP32 S3 (PSRAM) to detect moisture patterns that precede disease — before visible symptoms appear.'},
+  {icon:'📷',title:'Computer Vision Integration',desc:'ESP32-CAM module to detect yellowing, wilting, or pest damage using edge AI image classification.'},
+  {icon:'🔋',title:'Solar + Battery Power',desc:'18V solar panel + LiFePO4 battery for fully off-grid greenhouse operation. Solar charge controller via I2C.'},
+  {icon:'🌐',title:'Multi-Node Mesh Network',desc:'ESP-NOW or BLE mesh to link 10+ nodes in large greenhouses. One gateway uploads to cloud for all.'},
+  {icon:'⚗️',title:'pH & EC Sensing',desc:'Atlas Scientific pH and EC probes via I2C for full nutrient solution monitoring in hydroponic/aeroponic setups.'},
+  {icon:'🌧️',title:'Weather API Integration',desc:'Skip irrigation if rain forecast >70%. Fetch local weather over Wi-Fi. Seasonal threshold auto-adjustment.'},
+  {icon:'📱',title:'Native Mobile App',desc:'React Native or Flutter app with persistent local SQLite history, push notifications, and offline map of zones.'},
+  {icon:'🔌',title:'Fertigation System',desc:'Nutrient dosing pump integration. Dilution ratios per crop profile. EC feedback control loop.'},
+  {icon:'🏭',title:'SCADA Integration',desc:'Modbus RTU or OPC-UA bridge for integration with existing industrial greenhouse management systems.'},
+  {icon:'🛰️',title:'Satellite Soil Data',desc:'NDVI satellite imagery cross-referenced with sensor data to detect water stress at field scale.'},
+  {icon:'🌡️',title:'Root Zone Climate Control',desc:'Substrate heating mats (day/night temp differential) controlled by DS18B20 PID loop for year-round crops.'},
+];
+
+// ─── RENDERING ────────────────────────────────────────────────────────────────
+
+function showDetail(id) {
+  const d = COMPONENTS[id];
+  if (!d) return;
+
+  // Remove active from all cards
+  document.querySelectorAll('.comp-card').forEach(c=>c.classList.remove('active'));
+  document.getElementById('c-'+id)?.classList.add('active');
+
+  const panel = document.getElementById('detail-panel');
+  panel.style.setProperty('--card-color', d.color);
+
+  document.getElementById('d-icon').textContent = d.icon;
+  document.getElementById('d-title').textContent = d.title;
+  document.getElementById('d-model').textContent = d.model;
+  document.getElementById('d-desc').textContent = d.desc;
+
+  ['why','how','role'].forEach(k => {
+    const ul = document.getElementById('d-'+k);
+    ul.innerHTML = d[k].map(t=>`<li>${t}</li>`).join('');
+  });
+
+  document.getElementById('d-specs').innerHTML = d.specs
+    .map(s=>`<span class="spec-pill">${s}</span>`).join('');
+
+  panel.classList.add('show');
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function closeDetail() {
+  document.getElementById('detail-panel').classList.remove('show');
+  document.querySelectorAll('.comp-card').forEach(c=>c.classList.remove('active'));
+}
+window.showDetail = showDetail;
+window.closeDetail = closeDetail;
+
+// ─── CROPS GRID ──────────────────────────────────────────────────────────────
+
+function buildCrops() {
+  const grid = document.getElementById('crops-grid');
+  grid.innerHTML = CROPS.map(c => {
+    const mPct = c.moistMin;
+    const mMax = c.moistMax;
+    return `
+    <div class="crop-card" style="--c-accent:${c.color}" onclick="expandCrop(this,${CROPS.indexOf(c)})">
+      <span class="crop-emoji">${c.emoji}</span>
+      <div class="crop-name">${c.name}</div>
+      <div class="crop-params">
+        <div class="param-row">
+          <span class="param-key">MOISTURE</span>
+          <div class="param-bar-wrap"><div class="param-bar-fill" style="width:${mPct}%;background:${c.color}"></div></div>
+          <span class="param-val">${mPct}–${mMax}%</span>
+        </div>
+        <div class="param-row">
+          <span class="param-key">AIR TEMP</span>
+          <div class="param-bar-wrap"><div class="param-bar-fill" style="width:${c.tempMax/50*100}%;background:var(--amber)"></div></div>
+          <span class="param-val">${c.tempMin}–${c.tempMax}°C</span>
+        </div>
+        <div class="param-row">
+          <span class="param-key">HUMIDITY</span>
+          <div class="param-bar-wrap"><div class="param-bar-fill" style="width:${c.humMin}%;background:var(--blue)"></div></div>
+          <span class="param-val">${c.humMin}–${c.humMax}%</span>
+        </div>
+        <div class="param-row">
+          <span class="param-key">SOIL TEMP</span>
+          <div class="param-bar-wrap"><div class="param-bar-fill" style="width:${c.soilTempMax/50*100}%;background:var(--green)"></div></div>
+          <span class="param-val">${c.soilTempMin}–${c.soilTempMax}°C</span>
+        </div>
+      </div>
+      <div style="margin-top:.75rem;font-size:.72rem;color:var(--text2);line-height:1.6;border-top:1px solid var(--border);padding-top:.6rem">
+        💡 ${c.tips}
+      </div>
+      <div style="display:flex;gap:.4rem;margin-top:.6rem;flex-wrap:wrap">
+        <span class="spec-pill" style="border-color:${c.color}40;color:${c.color};background:${c.color}15">Irrigate ${c.duration}s</span>
+        <span class="spec-pill">Every ${c.interval}min</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.expandCrop = function(el, idx) {}; // cards are self-contained
+
+// ─── PROS / CONS RENDER ───────────────────────────────────────────────────────
+
+function buildPros() {
+  document.getElementById('pros-list').innerHTML = PROS.map(p =>
+    `<div class="pc-item"><div class="pc-dot pro">✓</div><span>${p}</span></div>`
+  ).join('');
+  document.getElementById('cons-list').innerHTML = CONS.map(c =>
+    `<div class="pc-item"><div class="pc-dot con">✗</div><span>${c}</span></div>`
+  ).join('');
+}
+
+// ─── USE CASES ───────────────────────────────────────────────────────────────
+
+function buildUseCases() {
+  document.getElementById('usecases-grid').innerHTML = USECASES.map(u =>
+    `<div class="uc-card">
+      <span class="uc-icon">${u.icon}</span>
+      <div class="uc-title">${u.title}</div>
+      <div class="uc-desc">${u.desc}</div>
+    </div>`
+  ).join('');
+}
+
+// ─── SCOPE ───────────────────────────────────────────────────────────────────
+
+function buildScope() {
+  document.getElementById('scope-grid').innerHTML = SCOPE.map(s =>
+    `<div class="scope-card">
+      <span class="scope-icon">${s.icon}</span>
+      <div class="scope-title">${s.title}</div>
+      <div class="scope-desc">${s.desc}</div>
+    </div>`
+  ).join('');
+}
+
+// ─── SIMULATION ──────────────────────────────────────────────────────────────
+
+const simState = {
+  running: false,
+  t: 0,
+  zones: [
+    {name:'Zone 1',crop:'Tomato',   moisture:65,valve:false,irrigating:false},
+    {name:'Zone 2',crop:'Lettuce',  moisture:58,valve:false,irrigating:false},
+    {name:'Zone 3',crop:'Pepper',   moisture:42,valve:false,irrigating:false},
+    {name:'Zone 4',crop:'Cucumber', moisture:70,valve:false,irrigating:false},
+  ],
+  airTemp:24,humidity:62,soilTemp:21,
+  sprinkler:false,pump:false,
+  interval:null,
+};
+
+const ZONE_THRESHOLDS = [
+  {min:40,max:70,tempMax:30},{min:50,max:80,tempMax:24},
+  {min:35,max:65,tempMax:32},{min:45,max:75,tempMax:28}
+];
+
+function buildSimZones() {
+  const mwrap = document.getElementById('zone-moistures');
+  const zwrap = document.getElementById('sim-zones');
+  mwrap.innerHTML = simState.zones.map((z,i)=>`
+    <div class="sensor-row">
+      <div style="flex:1">
+        <div class="sensor-lbl">${z.name} (${z.crop})</div>
+        <div class="sensor-bar"><div class="sensor-fill" id="mbar-${i}" style="width:${z.moisture}%;background:var(--purple)"></div></div>
+      </div>
+      <div class="sensor-val" id="mval-${i}">${Math.round(z.moisture)}%</div>
+    </div>`).join('');
+  zwrap.innerHTML = simState.zones.map((z,i)=>`
+    <div class="zone-block" id="zb-${i}">
+      <div>
+        <div class="zone-name">${z.name}</div>
+        <div class="zone-crop">${z.crop}</div>
+      </div>
+      <div class="zone-badge2" id="zbadge-${i}">STANDBY</div>
+    </div>`).join('');
+}
+
+function simLog(msg,type='') {
+  const log = document.getElementById('sim-log');
+  const now = new Date().toLocaleTimeString('en-GB');
+  const colors = {ok:'var(--green)',warn:'var(--amber)',danger:'var(--red)',info:'var(--blue)','':`var(--text2)`};
+  const el = document.createElement('div');
+  el.style.color = colors[type]||colors[''];
+  el.textContent = `[${now}] ${msg}`;
+  log.prepend(el);
+  while(log.children.length>20) log.removeChild(log.lastChild);
+}
+
+function simStep() {
+  simState.t += 0.05;
+
+  // Oscillate environment
+  simState.airTemp  = 22 + 10 * Math.sin(simState.t * 0.3) + Math.random()*0.5;
+  simState.humidity = 55 + 25 * Math.sin(simState.t * 0.2 + 1) + Math.random()*1;
+  simState.soilTemp = 20 + 4  * Math.sin(simState.t * 0.15)   + Math.random()*0.3;
+
+  // Evolve zone moisture
+  simState.zones.forEach((z,i)=>{
+    if(z.irrigating){ z.moisture = Math.min(100, z.moisture + 0.8 + Math.random()*0.3); }
+    else            { z.moisture = Math.max(0,   z.moisture - 0.4 + Math.random()*0.2); }
+
+    const th = ZONE_THRESHOLDS[i];
+    const wasIrrigating = z.irrigating;
+    if(!z.irrigating && z.moisture < th.min){
+      z.irrigating = true; z.valve = true;
+      simState.pump = true;
+      simLog(`💧 ${z.name} valve OPEN — moisture ${Math.round(z.moisture)}% < ${th.min}%`,'ok');
+    }
+    if(z.irrigating && z.moisture >= th.max){
+      z.irrigating = false; z.valve = false;
+      simLog(`✓ ${z.name} valve CLOSED — moisture ${Math.round(z.moisture)}% ≥ ${th.max}%`,'info');
+    }
+  });
+
+  // Pump off if no active valve
+  const anyActive = simState.zones.some(z=>z.irrigating);
+  if(simState.pump && !anyActive){ simState.pump=false; simLog('⚙️ Pump OFF — no active zones','warn'); }
+  if(!simState.pump && anyActive){ simState.pump=true; }
+
+  // Sprinkler logic
+  const needSpr = simState.airTemp > 30 || simState.humidity < 38;
+  if(needSpr && !simState.sprinkler){ simState.sprinkler=true; simLog('💦 Sprinkler ON — temp/humidity threshold','warn'); }
+  if(!needSpr && simState.sprinkler){ simState.sprinkler=false; simLog('💦 Sprinkler OFF','info'); }
+
+  // Update DOM
+  const tempWarn = simState.airTemp > 30 ? 'warn' : simState.airTemp > 27 ? '' : '';
+  const humWarn  = simState.humidity < 38 ? 'danger' : simState.humidity < 45 ? 'warn' : '';
+  document.getElementById('sv-temp').textContent = simState.airTemp.toFixed(1)+'°C';
+  document.getElementById('sv-temp').className   = 'sensor-val '+tempWarn;
+  document.getElementById('sb-temp').style.width = Math.min(100, simState.airTemp/45*100)+'%';
+
+  document.getElementById('sv-hum').textContent  = simState.humidity.toFixed(1)+'%';
+  document.getElementById('sv-hum').className    = 'sensor-val '+humWarn;
+  document.getElementById('sb-hum').style.width  = simState.humidity+'%';
+
+  document.getElementById('sv-st').textContent   = simState.soilTemp.toFixed(1)+'°C';
+  document.getElementById('sb-st').style.width   = Math.min(100, simState.soilTemp/40*100)+'%';
+
+  simState.zones.forEach((z,i)=>{
+    const mbar  = document.getElementById('mbar-'+i);
+    const mval  = document.getElementById('mval-'+i);
+    const zb    = document.getElementById('zb-'+i);
+    const badge = document.getElementById('zbadge-'+i);
+    if(mbar)  mbar.style.width = Math.round(z.moisture)+'%';
+    if(mval)  mval.textContent = Math.round(z.moisture)+'%';
+    if(zb)    zb.className = 'zone-block'+(z.irrigating?' irrigating': z.moisture < ZONE_THRESHOLDS[i].min?' dry':'');
+    if(badge) badge.textContent = z.irrigating ? '💧 IRRIGATING' : 'STANDBY';
+  });
+
+  // Sprinkler/pump display
+  const si = document.getElementById('sprinkler-sim-state');
+  const pi = document.getElementById('pump-sim-state');
+  const bi = document.getElementById('ble-sim-state');
+  if(si) { si.textContent = simState.sprinkler ? 'ACTIVE' : 'STANDBY'; si.style.color = simState.sprinkler ? 'var(--blue)' : 'var(--text3)'; }
+  if(pi) { pi.textContent = simState.pump ? 'RUNNING' : 'OFF'; pi.style.color = simState.pump ? 'var(--green)' : 'var(--text3)'; }
+
+  // BLE TX flash
+  if(Math.random() > 0.8) {
+    const fn = document.getElementById('fn-ble');
+    const fw = document.getElementById('fn-web');
+    fn.classList.add('active'); fw.classList.add('active');
+    setTimeout(()=>{ fn.classList.remove('active'); fw.classList.remove('active'); }, 400);
+    if(bi) { bi.textContent = 'TX'; bi.style.color = 'var(--teal)'; setTimeout(()=>{ bi.textContent='IDLE'; bi.style.color='var(--text3)'; },400); }
+  }
+  document.getElementById('fn-esp').classList.add('active');
+  setTimeout(()=>document.getElementById('fn-esp').classList.remove('active'),300);
+}
+
+function toggleSim() {
+  const btn = document.getElementById('sim-btn');
+  if(!simState.running){
+    simState.running = true;
+    btn.textContent = '■ Stop';
+    btn.classList.add('running');
+    simState.interval = setInterval(simStep, 800);
+    simLog('▶ Simulation started','ok');
+  } else {
+    simState.running = false;
+    btn.textContent = '▶ Run Simulation';
+    btn.classList.remove('running');
+    clearInterval(simState.interval);
+    simLog('■ Simulation stopped','warn');
+  }
+}
+window.toggleSim = toggleSim;
+
+// ─── SCROLL REVEAL ────────────────────────────────────────────────────────────
+
+function setupReveal() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, {threshold:.08});
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+
+buildCrops();
+buildPros();
+buildUseCases();
+buildScope();
+buildSimZones();
+setupReveal();
+</script>
+</body>
+</html>
