@@ -190,6 +190,32 @@ Pull requests welcome! Please open an issue first for major changes.
 
 ---
 
+## Skills & technologies
+
+`Arduino/C++` · `JavaScript` · `HTML/CSS`
+
+
+## Repository structure
+
+Key files and folders (not exhaustive):
+
+- `README.md`
+- `WIRING.md`
+- `bleConstants.js`
+- `bleManager.js`
+- `deploy.yml`
+- `index.html`
+- `manifest.json`
+- `platformio.ini`
+- `smart_greenhouse.ino`
+- `sw.js`
+
+
+## How it works
+
+The main firmware sketch is `smart_greenhouse.ino`. Open it in Arduino IDE, verify the board, pin mapping and library requirements, then compile and upload. Test hardware behaviour on the real circuit before relying on it.
+
+
 ## Maintenance & Audit
 
 - **Audit date:** 10 November 2026
