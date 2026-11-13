@@ -117,6 +117,6 @@ The repository currently contains no root-level `LICENSE` file in the inspected 
 
 ## Maintenance & audit
 
-- **Audit date:** 11 November 2026
+- **Audit date:** 13 November 2026
 - **Scope:** documentation-only review; source, pins, dependencies, and hardware behavior were not changed.
 - **Verification:** compilation, BLE integration, PWA/deployment, and physical watering remain unverified.
